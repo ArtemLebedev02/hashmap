@@ -1,0 +1,124 @@
+import java.util.List;
+
+public class MyHashMap<K, V> {
+    private Bucket<K, V>[] buckets;
+    private int size = 0;
+    private int CAPACITY = 10;
+
+    public MyHashMap() {
+        this.buckets = new Bucket[CAPACITY];
+    }
+    private int hashCode(K key) {
+        return (key.hashCode() & 0xfffffff) % CAPACITY;
+    }
+    private Pair<K, V> getPair(K key) {
+        int hash = hashCode(key);
+        if (buckets[hash] == null) return null;
+        for (int i = 0; i < buckets[hash].getList().size(); i++) {
+            Pair<K, V> curPair = buckets[hash].getList().get(i);
+            if(curPair.getKey().equals(key)) {
+                return curPair;
+            }
+        }
+        return null;
+    }
+    public void put(K key, V value) {
+        if (containsKey(key)) {
+            Pair<K, V> curPair = getPair(key);
+            curPair.setValue(value);
+        }
+        int hash = hashCode(key);
+        if (buckets[hash] == null) {
+            buckets[hash] = new Bucket<>();
+        }
+        buckets[hash].addPair(new Pair<>(key, value));
+        size++;
+    }
+    public V get(K key) {
+        Pair<K, V> curPair = getPair(key);
+        if (curPair != null) return curPair.getValue();
+        return null;
+    }
+    public boolean containsKey(K key) {
+        return getPair(key) != null;
+    }
+    public void delete(K key) {
+        if(containsKey(key)) {
+            int hash = hashCode(key);
+            buckets[hash].remove(getPair(key));
+        }
+    }
+    public int size() {
+        return size;
+    }
+    public void printMap() {
+        for (int i = 0; i < CAPACITY; i++) {
+            if (buckets[i] != null) {
+                System.out.println("Bucket #" + i);
+                buckets[i].getList().forEach(p -> System.out.println(p.getKey() + " " + p.getValue()));
+            }
+        }
+        System.out.println("_______________________________");
+    }
+    public class HashSet {
+        private int[] set;
+        private int size;
+
+        public HashSet() {
+            set = new int[10];
+            size = 0;
+        }
+
+        public boolean add(K key, V value) {
+            if (containsKey(key)) {
+                Pair<K, V> curPair = getPair(key);
+                curPair.setValue(value);
+                return false;
+            }
+            put(key, value);
+            size++;
+            return true;
+        }
+
+        public boolean remove(K key, V value) {
+            if (!containsKey(key)) {
+                return false;
+            }
+            Pair<K, V> curPair = getPair(key);
+            if (!curPair.getValue().equals(value)) {
+                return false;
+            }
+            int hash = MyHashMap.this.hashCode(key);
+            buckets[hash].remove(curPair);
+            size--;
+            return true;
+        }
+
+        public boolean contains(V value) {
+            for (int i = 0; i < size; i++) {
+                List<Pair<K, V>> a = buckets[i].getList();
+                Pair<K,V> ab = a.get(0);
+                String check = ab.getValue().toString().toLowerCase();
+                if(check.equals(value.toString().toLowerCase())){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public static void main(String[] args) {
+        MyHashMap<Integer, String> passportsAndNames = new MyHashMap<>();
+        MyHashMap<Integer, String>.HashSet passport = passportsAndNames.new HashSet();
+
+
+        passport.add(0, "Artem");
+        passport.add(1, "Misha");
+        passport.add(2, "Petya");
+        Boolean pasport = passport.contains("Petya");
+        System.out.println("Petya найден в hashmap: " + pasport);
+        passport.remove(2, "Petya");
+        pasport = passport.contains("Petya");
+        System.out.println("Petya найден в hashmap: " + pasport);
+    }
+}
