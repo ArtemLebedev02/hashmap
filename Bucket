@@ -1,0 +1,23 @@
+import java.util.LinkedList;
+import java.util.List;
+
+public class Bucket<K, V> {
+    private List<Pair<K, V>> list;
+
+    public Bucket() {
+        this.list = new LinkedList<>();
+    }
+
+    public List<Pair<K, V>> getList() {
+        return list;
+    }
+
+    public void addPair(Pair<K, V> pair) {
+        list.add(pair);
+    }
+
+    public void remove(Pair<K, V> pair) {
+        list.remove(pair);
+    }
+}
+
