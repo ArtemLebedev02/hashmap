@@ -96,7 +96,17 @@ public class MyHashMap<K, V> {
 
         public boolean contains(V value) {
             for (int i = 0; i < size; i++) {
+                if(buckets[i] == null){
+                    size++;
+                    continue;
+                }
+
                 List<Pair<K, V>> a = buckets[i].getList();
+                if(a.isEmpty()){
+                    size++;
+                    continue;
+
+                }
                 Pair<K,V> ab = a.get(0);
                 String check = ab.getValue().toString().toLowerCase();
                 if(check.equals(value.toString().toLowerCase())){
@@ -115,10 +125,10 @@ public class MyHashMap<K, V> {
         passport.add(0, "Artem");
         passport.add(1, "Misha");
         passport.add(2, "Petya");
-        Boolean pasport = passport.contains("Petya");
-        System.out.println("Petya найден в hashmap: " + pasport);
-        passport.remove(2, "Petya");
-        pasport = passport.contains("Petya");
-        System.out.println("Petya найден в hashmap: " + pasport);
+        Boolean pasport = passport.contains("Artem");
+        System.out.println("Artem найден в hashmap: " + pasport);
+        passport.remove(0, "Artem");
+        pasport = passport.contains("Artem");
+        System.out.println("Artem найден в hashmap: " + pasport);
     }
 }
